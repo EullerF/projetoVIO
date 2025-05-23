@@ -10,6 +10,7 @@ import api from "../axios/axios";
 import { Button, IconButton, Alert, Snackbar } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Link, useNavigate } from "react-router-dom";
+import ConfirmDelete from "../components/ConfirmDelete";
 
 function listUsers() {
   const [users, setUsers] = useState([]);
@@ -19,6 +20,9 @@ function listUsers() {
     message: "",
   });
   const navigate = useNavigate();
+
+  const [userToDelete, setUserToDelete] = useState("");
+  const [modalOpen, setModalOpen] = useState(false);
 
   // Função para exibir o alerta
   const showAlert = (severity, message) => {
@@ -30,6 +34,11 @@ function listUsers() {
     setAlert({ ...alert, open: false });
   };
 
+  const openDeleteModal = (id, name) => {
+    setUserToDelete({ id: id, name: name });
+    setModalOpen(true);
+  };
+
   async function getUsers() {
     try {
       const response = await api.getUsers();
@@ -37,20 +46,19 @@ function listUsers() {
     } catch (error) {
       console.error("Erro ao buscar usuários", error);
       showAlert("error", "Erro ao buscar usuários");
-    } 
+    }
   }
 
-  async function deleteUser(id) {
+  async function deleteUser() {
     try {
-      await api.deleteUser(id);
+      await api.deleteUser(userToDelete.id);
       await getUsers();
       showAlert("success", "Usuário excluído com sucesso!");
+      setModalOpen(false)
     } catch (error) {
       console.error("Erro ao deletar usuário", error);
-      showAlert(
-        "error",
-        error.response.data.error 
-      );
+      showAlert("error", error.response.data.error);
+      setModalOpen(false)
     }
   }
 
@@ -60,16 +68,16 @@ function listUsers() {
       <TableCell align="center">{user.email}</TableCell>
       <TableCell align="center">{user.cpf}</TableCell>
       <TableCell align="center">
-        <IconButton onClick={() => deleteUser(user.id_usuario)}>
+        <IconButton onClick={() => openDeleteModal(user.id_usuario,user.name)}>
           <DeleteIcon color="error" />
         </IconButton>
       </TableCell>
     </TableRow>
   ));
 
-  function logout() {
-    localStorage.removeItem("authenticated");
-    navigate("/");
+  function eventos() {
+    //localStorage.removeItem("authenticated");
+    navigate("/events");
   }
 
   useEffect(() => {
@@ -92,6 +100,12 @@ function listUsers() {
           {alert.message}
         </Alert>
       </Snackbar>
+      <ConfirmDelete
+      open={modalOpen}
+      userName={userToDelete.name}
+      onConfirm={deleteUser}
+      onClose={()=>setModalOpen(false)}
+      />
       {users.length === 0 ? (
         <h1>Carregando usuários</h1>
       ) : (
@@ -112,8 +126,8 @@ function listUsers() {
               <TableBody>{listUsers}</TableBody>
             </Table>
           </TableContainer>
-          <Button fullWidth variant="contained" onClick={logout}>
-            SAIR
+          <Button fullWidth variant="contained" onClick={eventos}>
+            Ir para eventos
           </Button>
         </div>
       )}

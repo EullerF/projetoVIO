@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import ListUsers from "./pages/listUsers";
+import ListUsers from "./pages/ListUsers";
+import ListEventos from "./pages/ListEvents";
 import Login from "./pages/Login";
 import Cadastro from "./pages/Cadastro";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -14,6 +15,11 @@ function App() {
           <Route path="/users" element={
             <ProtectedRoute>
               <ListUsers/>
+            </ProtectedRoute>
+          } />
+          <Route path="/events" element={
+            <ProtectedRoute>
+              <ListEventos/>
             </ProtectedRoute>
           } />
         </Routes>
