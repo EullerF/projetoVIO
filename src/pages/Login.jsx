@@ -1,4 +1,5 @@
 import * as React from "react";
+import { Alert, Snackbar } from "@mui/material";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Avatar from "@mui/material/Avatar";
@@ -7,7 +8,7 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 import { Link, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect} from "react";
 import api from "../axios/axios";
 
 function Login() {
@@ -25,24 +26,43 @@ function Login() {
     event.preventDefault();
     login();
   };
+  const [alert, setAlert] = useState({
+    open: false,
+    severity: "",
+    message: "",
+  });
+
+  const showAlert = (severity, message) => {
+    setAlert({ open: true, severity, message });
+    localStorage.removeItem("refresh_token");
+  };
+
+  const handleCloseAlert = () => {
+    setAlert({ ...alert, open: false });
+  };
 
   async function login() {
-    await api.postLogin(user).then(
-      (response) => {
-        alert(response.data.message);
-        if (response.data.token) {
-          localStorage.setItem("authenticated", true);
-          localStorage.setItem("token", response.data.token);
-          navigate("users/");
-        }
-      },
-      (error) => {
-        console.log(error);
-        alert(error.response.data.error);
+    try {
+      const response = await api.postLogin(user);
+      showAlert("success", response.data.message);
+      if (response.data.token) {
+        localStorage.setItem("authenticated", true);
+        localStorage.setItem("token", response.data.token);
+        navigate("CreateEvents/");
       }
-    );
+    } catch (error) {
+      showAlert("error", error.response?.data?.error || "Erro ao fazer login");
+      console.log(error);
+    }
   }
 
+  useEffect(() => {
+      const isRefresh_token = localStorage.getItem("refresh_token");
+      if(isRefresh_token){
+      showAlert("warning", "Realize a autenticação novamente");
+      }
+  }, []);
+  
   return (
     <Container component="main" maxWidth="xl">
       <Box
@@ -53,6 +73,20 @@ function Login() {
           alignItems: "center",
         }}
       >
+        <Snackbar
+          open={alert.open}
+          autoHideDuration={3000}
+          onClose={handleCloseAlert}
+          anchorOrigin={{ vertical: "top", horizontal: "center" }}
+        >
+          <Alert
+            onClose={handleCloseAlert}
+            severity={alert.severity}
+            sx={{ width: "100%" }}
+          >
+            {alert.message}
+          </Alert>
+        </Snackbar>
         <Avatar
           sx={{
             margin: 1,
