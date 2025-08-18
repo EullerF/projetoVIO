@@ -67,13 +67,22 @@ function listEventos() {
         <TableCell align="center">{evento.data_hora}</TableCell>
         <TableCell align="center">{evento.local}</TableCell>
         <TableCell align="center">
+          {evento.id_evento && (
+            <img
+              src={`http://localhost:5000/api/v1/evento/imagem/${evento.id_evento}`}
+              alt="imagem do evento"
+              style={{ width: "80px", height: "80px", objectFit: "cover" }}
+            />
+          )}
+        </TableCell>
+        <TableCell align="center">
           <IconButton onClick={() => deleteEvento(evento.id_evento)}>
             <DeleteOutlineIcon color="error" />
           </IconButton>
         </TableCell>
         <TableCell align="center">
           <IconButton onClick={() => abrirModalIngresso(evento)}>
-           Adicionar
+            Adicionar
           </IconButton>
         </TableCell>
       </TableRow>
@@ -139,6 +148,9 @@ function listEventos() {
                 </TableCell>
                 <TableCell align="center" sx={{ color: "#fff" }}>
                   Local
+                </TableCell>
+                <TableCell align="center" sx={{ color: "#fff" }}>
+                  Imagem
                 </TableCell>
                 <TableCell align="center" sx={{ color: "#fff" }}>
                   Excluir
