@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import ListUsers from "./pages/ListUsers";
+import ListUsers from "./pages/listUsers";
 import ListEventos from "./pages/ListEvents";
 import Login from "./pages/Login";
 import Cadastro from "./pages/Cadastro";
