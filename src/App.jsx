@@ -5,6 +5,7 @@ import Login from "./pages/Login";
 import Cadastro from "./pages/Cadastro";
 import ProtectedRoute from "./components/ProtectedRoute";
 import CreateEvent from "./pages/CreateEvent";
+import Dashboard from "./pages/Dashboard";
 
 function App() {
   return (
@@ -13,21 +14,38 @@ function App() {
         <Routes>
           <Route path="/" element={<Login />} />
           <Route path="/cadastro" element={<Cadastro />} />
-          <Route path="/users" element={
-            <ProtectedRoute>
-              <ListUsers/>
-            </ProtectedRoute>
-          } />
-          <Route path="/events" element={
-            <ProtectedRoute>
-              <ListEventos/>
-            </ProtectedRoute>
-          } />
-          <Route path="/CreateEvents" element={
-            <ProtectedRoute>
-              <CreateEvent/>
-            </ProtectedRoute>
-          } />
+          <Route
+            path="/users"
+            element={
+              <ProtectedRoute>
+                <ListUsers />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/events"
+            element={
+              <ProtectedRoute>
+                <ListEventos />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/CreateEvents"
+            element={
+              <ProtectedRoute>
+                <CreateEvent />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            }
+          />
         </Routes>
       </BrowserRouter>
     </div>
